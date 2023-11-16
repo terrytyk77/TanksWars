@@ -25,4 +25,6 @@ private:
 	
 	UFUNCTION()
 	void MoveToMouseLocation();
+	UFUNCTION()
+	void Fire();
 };

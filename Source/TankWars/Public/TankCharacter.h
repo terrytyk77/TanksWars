@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "TankCharacter.generated.h"
 
+class AProjectile;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -25,11 +26,14 @@ public:
 	/** Returns FollowCamera sub-object */
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	UFUNCTION(Server, Reliable)
+	void Fire();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+private:
 	/** Camera boom positioning the camera on top of the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta=(AllowPrivateAccess="true"))
 	USpringArmComponent* CameraBoom;
@@ -38,5 +42,8 @@ public:
 	UCameraComponent* FollowCamera;
 	/** The distance from the camera to the focus point */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta=(AllowPrivateAccess="true"))
-	float CameraArmLength = 1000.0f;
+	float CameraArmLength;
+	/** Projectile to spawn when the tank fires */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AProjectile> ProjectileClass;
 };
