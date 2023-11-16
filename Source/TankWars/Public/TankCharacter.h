@@ -18,6 +18,7 @@ class TANKWARS_API ATankCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ATankCharacter();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
@@ -46,4 +47,9 @@ private:
 	/** Projectile to spawn when the tank fires */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<AProjectile> ProjectileClass;
+	UPROPERTY(Replicated, ReplicatedUsing = "OnRepPlayerColorChange")
+	FColor PlayerColor;
+
+	UFUNCTION()
+	void OnRepPlayerColorChange();
 };

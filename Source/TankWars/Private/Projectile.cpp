@@ -57,10 +57,13 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if(!OtherActor)
 		return;
 	
-	if(const ATankCharacter* TankCharacter = Cast<ATankCharacter>(OtherActor);
+	if(ATankCharacter* TankCharacter = Cast<ATankCharacter>(OtherActor);
 		TankCharacter && TankCharacter != GetOwner())
 	{
-		
+		TankCharacter->Destroy();
 	}
+
+	if(IsValid(this))
+		Destroy();
 }
 

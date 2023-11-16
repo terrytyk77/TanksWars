@@ -7,6 +7,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ATankCharacter::ATankCharacter()
@@ -39,6 +40,12 @@ ATankCharacter::ATankCharacter()
 	GetCharacterMovement()->RotationRate = FRotator{ 0.f, 540.f, 0.f };
 }
 
+void ATankCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ATankCharacter, PlayerColor);
+}
+
 void ATankCharacter::ServerFire_Implementation()
 {
 	if(const USkeletalMeshSocket* MuzzleSocket = GetMesh()->GetSocketByName(FName("Muzzle")))
@@ -63,6 +70,18 @@ void ATankCharacter::ServerFire_Implementation()
 void ATankCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Randomize the player's tank color
+	if(HasAuthority())
+	{
+		PlayerColor = FColor::MakeRandomColor();
+		GetMesh()->SetVectorParameterValueOnMaterials(FName("PlayerColor"), FVector{ PlayerColor });
+	}
+}
+
+void ATankCharacter::OnRepPlayerColorChange()
+{
+	GetMesh()->SetVectorParameterValueOnMaterials(FName("PlayerColor"), FVector{ PlayerColor });
 }
 
 // Called every frame

@@ -13,5 +13,6 @@ UCLASS()
 class TANKWARS_API ADeathMatchGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+	virtual void OnPostLogin(AController* NewPlayer) override;
 };
