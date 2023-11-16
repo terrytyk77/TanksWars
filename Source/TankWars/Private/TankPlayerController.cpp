@@ -43,13 +43,14 @@ void ATankPlayerController::MoveToMouseLocation()
 	}
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
 void ATankPlayerController::Fire()
 {
 	if(APawn* PlayerPawn = GetPawn())
 	{
 		if(ATankCharacter* TankCharacter = Cast<ATankCharacter>(PlayerPawn))
 		{
-			TankCharacter->Fire();
+			TankCharacter->ServerFire();
 		}
 	}
 }

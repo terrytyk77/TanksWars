@@ -27,7 +27,7 @@ public:
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	UFUNCTION(Server, Reliable)
-	void Fire();
+	void ServerFire();
 
 protected:
 	// Called when the game starts or when spawned

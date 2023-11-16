@@ -7,6 +7,7 @@
 #include "Projectile.generated.h"
 
 class USphereComponent;
+class UProjectileMovementComponent;
 
 UCLASS()
 class TANKWARS_API AProjectile : public AActor
@@ -19,6 +20,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
+	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,4 +30,8 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 	USphereComponent* CollisionSphere;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere)
+	UProjectileMovementComponent* ProjectileMovementComponent;
 };
