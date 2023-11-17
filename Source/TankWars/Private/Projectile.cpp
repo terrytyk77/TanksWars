@@ -2,7 +2,9 @@
 
 #include "Projectile.h"
 
+#include "DeathMatchGameMode.h"
 #include "TankCharacter.h"
+#include "TankPlayerController.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -60,7 +62,15 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if(ATankCharacter* TankCharacter = Cast<ATankCharacter>(OtherActor);
 		TankCharacter && TankCharacter != GetOwner())
 	{
-		TankCharacter->Destroy();
+		if(const UWorld* World = GetWorld())
+		{
+			if(ADeathMatchGameMode* GameMode = World->GetAuthGameMode<ADeathMatchGameMode>())
+			{
+				ATankPlayerController* AttackerPlayerController = Cast<ATankPlayerController>(GetOwner());
+				ATankPlayerController* VictimPlayerController = Cast<ATankPlayerController>(TankCharacter);
+				GameMode->PlayerEliminated(TankCharacter, VictimPlayerController, AttackerPlayerController);
+			}
+		}
 	}
 
 	if(IsValid(this))

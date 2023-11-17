@@ -14,17 +14,24 @@ class TANKWARS_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	ATankPlayerController();
+	// Used to replicate variables
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Input", meta=(AllowPrivateAccess="true"))
 	UNiagaraSystem* FXCursor;
+	UPROPERTY(ReplicatedUsing="OnRep_PossessedPawn")
+	APawn* PossessedPawn;
 	
 	UFUNCTION()
 	void MoveToMouseLocation();
 	UFUNCTION()
 	void Fire();
+	UFUNCTION()
+	void OnRep_PossessedPawn();
 };

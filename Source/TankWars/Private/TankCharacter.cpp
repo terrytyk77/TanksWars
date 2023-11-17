@@ -2,6 +2,7 @@
 
 #include "TankCharacter.h"
 
+#include "DeathMatchGameMode.h"
 #include "Projectile.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -15,8 +16,13 @@ ATankCharacter::ATankCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Replicated settings
 	SetReplicates(true);
     ACharacter::SetReplicateMovement(true);
+
+	// Spawn settings
+	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	
 	// Create a camera boom (For more detailed camera control if needed)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -66,6 +72,17 @@ void ATankCharacter::ServerFire_Implementation()
 	}
 }
 
+void ATankCharacter::Eliminate()
+{
+	if(const UWorld* World = GetWorld())
+	{
+		if(ADeathMatchGameMode* GameMode = World->GetAuthGameMode<ADeathMatchGameMode>())
+		{
+			GameMode->RequestRespawn(this, Controller);
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void ATankCharacter::BeginPlay()
 {
@@ -75,11 +92,11 @@ void ATankCharacter::BeginPlay()
 	if(HasAuthority())
 	{
 		PlayerColor = FColor::MakeRandomColor();
-		GetMesh()->SetVectorParameterValueOnMaterials(FName("PlayerColor"), FVector{ PlayerColor });
+		OnRep_PlayerColor();
 	}
 }
 
-void ATankCharacter::OnRepPlayerColorChange()
+void ATankCharacter::OnRep_PlayerColor() const
 {
 	GetMesh()->SetVectorParameterValueOnMaterials(FName("PlayerColor"), FVector{ PlayerColor });
 }
