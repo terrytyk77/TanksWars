@@ -79,8 +79,7 @@ void ATankPlayerController::ToggleScoreboard()
 {
 	if(const ATankHUD* HUD = GetHUD<ATankHUD>())
 	{
-		HUD->ToggleScoreboardVisibility();
-		HUD->GetScoreboardWidget()->InitScoreBoard(GetWorld()->GetGameState()->PlayerArray);
+		HUD->ToggleScoreboardVisibility(GetWorld()->GetGameState()->PlayerArray);
 	}
 }
 

@@ -15,8 +15,8 @@ class TANKWARS_API UScoreboard : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void AddScoreboardRow(const FString& PlayerName, const int32 Score);
-	void InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerArray);
+	void AddScoreboardRow(const FString& PlayerName, const int32 Score) const;
+	void InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerArray) const;
 
 protected:
 	virtual void NativeConstruct() override;

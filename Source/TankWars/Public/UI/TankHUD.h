@@ -19,7 +19,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	void ToggleScoreboardVisibility() const;
+	void ToggleScoreboardVisibility(const TArray<TObjectPtr<APlayerState>>& PlayerArray) const;
 
 	FORCEINLINE UScoreboard* GetScoreboardWidget() const { return ScoreboardWidget; }
 	

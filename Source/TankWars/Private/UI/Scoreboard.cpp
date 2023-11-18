@@ -3,21 +3,22 @@
 #include "UI/Scoreboard.h"
 
 #include "Components/VerticalBox.h"
+#include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "UI/ScoreboardRow.h"
 
-void UScoreboard::AddScoreboardRow(const FString& PlayerName, const int32 Score)
+void UScoreboard::AddScoreboardRow(const FString& PlayerName, const int32 Score) const
 {
 	if(ScoreboardRowWidgetClass)
 	{
-		const UScoreboardRow* ScoreboardRow = CreateWidget<UScoreboardRow>(this, ScoreboardRowWidgetClass);
+		UScoreboardRow* ScoreboardRow = CreateWidget<UScoreboardRow>(GetOwningLocalPlayer()->PlayerController, ScoreboardRowWidgetClass);
+		PlayerScoreContainer->AddChild(ScoreboardRow);
 		ScoreboardRow->SetPlayerName(PlayerName);
 		ScoreboardRow->SetScore(Score);
-		PlayerScoreContainer->AddChildToVerticalBox(ScoreboardRow->GetRootWidget());
 	}
 }
 
-void UScoreboard::InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerArray)
+void UScoreboard::InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerArray) const
 {
 	for (auto PS : PlayerArray)
 	{
@@ -26,9 +27,10 @@ void UScoreboard::InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerA
 		const int32 Score = PlayerState->GetScore();
 		bool PlayerFound = false;
 
-		const auto Rows = PlayerScoreContainer->GetAllChildren();
-		
-		for(const auto RowWidget : Rows)
+		const TArray<UWidget*> Rows = PlayerScoreContainer->GetAllChildren();
+
+		// Try to update the player score if player is already in the list
+		for(const UWidget* RowWidget : Rows)
 		{
 			if(const UScoreboardRow* ScoreboardRow = Cast<UScoreboardRow>(RowWidget))
 			{
@@ -41,6 +43,7 @@ void UScoreboard::InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerA
 			}
 		}
 
+		// Add player to the list if not found
 		if(!PlayerFound)
 			AddScoreboardRow(PlayerName, Score);
 	}
@@ -50,4 +53,6 @@ void UScoreboard::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// Set Hidden by default
+	SetVisibility(ESlateVisibility::Collapsed);
 }

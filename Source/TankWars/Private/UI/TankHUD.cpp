@@ -21,7 +21,6 @@ void ATankHUD::BeginPlay()
 	{
 		ScoreboardWidget = CreateWidget<UScoreboard>(GetOwningPlayerController(), ScoreboardWidgetClass);
 		ScoreboardWidget->AddToViewport();
-		ToggleScoreboardVisibility();
 	}
 }
 
@@ -31,14 +30,19 @@ void ATankHUD::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ATankHUD::ToggleScoreboardVisibility() const
+void ATankHUD::ToggleScoreboardVisibility(const TArray<TObjectPtr<APlayerState>>& PlayerArray) const
 {
 	if(!ScoreboardWidget)
 		return;
 
 	if (ScoreboardWidget->GetVisibility() == ESlateVisibility::HitTestInvisible)
+	{
 		ScoreboardWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 	else
+	{
+		ScoreboardWidget->InitScoreBoard(PlayerArray);
 		ScoreboardWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
 }
 
