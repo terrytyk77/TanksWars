@@ -25,6 +25,15 @@ void ATankPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME(ATankPlayerController, PossessedPawn);
 }
 
+void ATankPlayerController::ClientUpdatePlayerScore_Implementation(const FString& PlayerName, const float Score)
+{
+	if(const ATankHUD* HUD = GetHUD<ATankHUD>())
+	{
+		if(const UScoreboard* Scoreboard = HUD->GetScoreboardWidget()) // Might not be active
+			Scoreboard->UpdatePlayerScore(PlayerName, Score);
+	}
+}
+
 // Called when the game starts or when spawned
 void ATankPlayerController::BeginPlay()
 {

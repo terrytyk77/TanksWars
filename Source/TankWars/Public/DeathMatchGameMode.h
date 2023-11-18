@@ -17,6 +17,7 @@ class TANKWARS_API ADeathMatchGameMode : public AGameModeBase
 public:
 	virtual void PlayerEliminated(ATankCharacter* EliminatedCharacter, ATankPlayerController* VictimController, ATankPlayerController* AttackerController);
 	virtual void RequestRespawn(ACharacter* EliminatedCharacter, AController* EliminatedController);
+	void UpdatePlayerScore(const FString& PlayerName, const float Score) const;
 	
 protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;

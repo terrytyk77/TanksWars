@@ -3,6 +3,7 @@
 
 #include "DeathMatchGameMode.h"
 
+#include "DeathMatchGameState.h"
 #include "TankCharacter.h"
 #include "TankPlayerController.h"
 #include "TankPlayerState.h"
@@ -13,8 +14,10 @@ void ADeathMatchGameMode::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Connected: %s"), *NewPlayer->GetName()));
+	if(const ATankPlayerState* PlayerState = NewPlayer->GetPlayerState<ATankPlayerState>())
+	{
+		UpdatePlayerScore(PlayerState->GetPlayerName(), PlayerState->GetScore());
+	}
 }
 
 void ADeathMatchGameMode::PlayerEliminated(ATankCharacter* EliminatedCharacter, ATankPlayerController* VictimController, ATankPlayerController* AttackerController)
@@ -24,6 +27,7 @@ void ADeathMatchGameMode::PlayerEliminated(ATankCharacter* EliminatedCharacter, 
 		if (ATankPlayerState* TankPlayerState = AttackerController->GetPlayerState<ATankPlayerState>())
 		{
 			TankPlayerState->AddToScore(1);
+			UpdatePlayerScore(TankPlayerState->GetPlayerName(), TankPlayerState->GetScore());
 		}
 	}
 	
@@ -48,5 +52,22 @@ void ADeathMatchGameMode::RequestRespawn(ACharacter* EliminatedCharacter, AContr
 		// Get random player start index to spawn the character
 		const int32 RandomPlayerStartIndex = FMath::RandHelper(PlayerStarts.Num());
 		RestartPlayerAtPlayerStart(EliminatedController, PlayerStarts[RandomPlayerStartIndex]);
+	}
+}
+
+void ADeathMatchGameMode::UpdatePlayerScore(const FString& PlayerName, const float Score) const
+{
+	for (auto PS : GameState->PlayerArray)
+	{
+		const APlayerState* PlayerState = PS.Get();
+		if (!PlayerState || !PlayerState->GetPlayerController())
+		{
+			return;
+		}
+		
+		if(ATankPlayerController* TankPlayerController = Cast<ATankPlayerController>(PlayerState->GetPlayerController()))
+		{
+			TankPlayerController->ClientUpdatePlayerScore(PlayerName, Score);
+		}
 	}
 }

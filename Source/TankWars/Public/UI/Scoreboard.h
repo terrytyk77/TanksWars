@@ -17,6 +17,7 @@ class TANKWARS_API UScoreboard : public UUserWidget
 public:
 	void AddScoreboardRow(const FString& PlayerName, const int32 Score) const;
 	void InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerArray) const;
+	void UpdatePlayerScore(const FString& PlayerName, const float Score) const;
 
 protected:
 	virtual void NativeConstruct() override;

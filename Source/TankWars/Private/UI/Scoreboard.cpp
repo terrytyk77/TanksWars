@@ -3,7 +3,6 @@
 #include "UI/Scoreboard.h"
 
 #include "Components/VerticalBox.h"
-#include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "UI/ScoreboardRow.h"
 
@@ -47,6 +46,31 @@ void UScoreboard::InitScoreBoard(const TArray<TObjectPtr<APlayerState>>& PlayerA
 		if(!PlayerFound)
 			AddScoreboardRow(PlayerName, Score);
 	}
+}
+
+void UScoreboard::UpdatePlayerScore(const FString& PlayerName, const float Score) const
+{
+	const TArray<UWidget*> Rows = PlayerScoreContainer->GetAllChildren();
+
+	bool PlayerFound = false;
+
+	// Try to update the player score if player is already in the list
+	for(const UWidget* RowWidget : Rows)
+	{
+		if(const UScoreboardRow* ScoreboardRow = Cast<UScoreboardRow>(RowWidget))
+		{
+			if (ScoreboardRow->GetPlayerName() == PlayerName)
+			{
+				PlayerFound = true;
+				ScoreboardRow->SetScore(Score);
+				break;
+			}
+		}
+	}
+
+	// Add player to the list if not found
+	if(!PlayerFound)
+		AddScoreboardRow(PlayerName, Score);
 }
 
 void UScoreboard::NativeConstruct()

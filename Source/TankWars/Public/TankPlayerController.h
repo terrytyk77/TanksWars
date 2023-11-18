@@ -16,7 +16,9 @@ public:
 	ATankPlayerController();
 	// Used to replicate variables
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+	UFUNCTION(Client, Reliable)
+	void ClientUpdatePlayerScore(const FString& PlayerName, const float Score);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
