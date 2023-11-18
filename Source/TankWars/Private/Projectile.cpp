@@ -66,7 +66,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 		{
 			if(ADeathMatchGameMode* GameMode = World->GetAuthGameMode<ADeathMatchGameMode>())
 			{
-				ATankPlayerController* AttackerPlayerController = Cast<ATankPlayerController>(GetOwner());
+				ATankPlayerController* AttackerPlayerController = Cast<ATankPlayerController>(GetOwner()->GetInstigatorController());
 				ATankPlayerController* VictimPlayerController = Cast<ATankPlayerController>(TankCharacter);
 				GameMode->PlayerEliminated(TankCharacter, VictimPlayerController, AttackerPlayerController);
 			}

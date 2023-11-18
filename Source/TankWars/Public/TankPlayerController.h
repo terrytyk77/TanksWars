@@ -33,5 +33,7 @@ private:
 	UFUNCTION()
 	void Fire();
 	UFUNCTION()
+	void ToggleScoreboard();
+	UFUNCTION()
 	void OnRep_PossessedPawn();
 };

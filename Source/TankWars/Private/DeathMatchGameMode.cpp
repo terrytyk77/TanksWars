@@ -4,6 +4,8 @@
 #include "DeathMatchGameMode.h"
 
 #include "TankCharacter.h"
+#include "TankPlayerController.h"
+#include "TankPlayerState.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -17,6 +19,14 @@ void ADeathMatchGameMode::OnPostLogin(AController* NewPlayer)
 
 void ADeathMatchGameMode::PlayerEliminated(ATankCharacter* EliminatedCharacter, ATankPlayerController* VictimController, ATankPlayerController* AttackerController)
 {
+	if(AttackerController)
+	{
+		if (ATankPlayerState* TankPlayerState = AttackerController->GetPlayerState<ATankPlayerState>())
+		{
+			TankPlayerState->AddToScore(1);
+		}
+	}
+	
 	if (EliminatedCharacter)
 	{
 		EliminatedCharacter->Eliminate();

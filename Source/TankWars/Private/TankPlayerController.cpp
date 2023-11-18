@@ -5,8 +5,11 @@
 #include "NiagaraFunctionLibrary.h"
 #include "TankCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "GameFramework/GameStateBase.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/Scoreboard.h"
+#include "UI/TankHUD.h"
 
 // Sets default values
 ATankPlayerController::ATankPlayerController()
@@ -33,7 +36,8 @@ void ATankPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction(FName("Click"), EInputEvent::IE_Released, this, &ThisClass::MoveToMouseLocation);
-	InputComponent->BindAction(FName("Fire"), IE_Pressed, this, &ThisClass::Fire);
+	InputComponent->BindAction(FName("Fire"),  EInputEvent::IE_Pressed, this, &ThisClass::Fire);
+	InputComponent->BindAction(FName("Scoreboard"), EInputEvent::IE_Pressed, this, &ThisClass::ToggleScoreboard);
 }
 
 void ATankPlayerController::OnPossess(APawn* InPawn)
@@ -67,6 +71,16 @@ void ATankPlayerController::Fire()
 		{
 			TankCharacter->ServerFire();
 		}
+	}
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst
+void ATankPlayerController::ToggleScoreboard()
+{
+	if(const ATankHUD* HUD = GetHUD<ATankHUD>())
+	{
+		HUD->ToggleScoreboardVisibility();
+		HUD->GetScoreboardWidget()->InitScoreBoard(GetWorld()->GetGameState()->PlayerArray);
 	}
 }
 
