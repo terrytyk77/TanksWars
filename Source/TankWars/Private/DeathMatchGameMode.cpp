@@ -11,7 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 
 void ADeathMatchGameMode::OnPostLogin(AController* NewPlayer)
-{
+{ 
 	Super::OnPostLogin(NewPlayer);
 
 	if(const ATankPlayerState* PlayerState = NewPlayer->GetPlayerState<ATankPlayerState>())
